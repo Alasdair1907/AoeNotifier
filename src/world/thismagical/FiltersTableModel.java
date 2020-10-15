@@ -1,28 +1,29 @@
-import filters.Filter;
-import filters.FiltersContainer;
+package world.thismagical;
+
+import world.thismagical.filters.Filter;
+import world.thismagical.filters.FiltersContainer;
+import world.thismagical.filters.Helpers;
 
 import javax.swing.table.AbstractTableModel;
 import java.util.List;
-import java.util.stream.Collector;
-import java.util.stream.Collectors;
 
 public class FiltersTableModel extends AbstractTableModel {
-    private List<String> columnNames = List.of("Filter type", "Predicate type", "Search predicate");
+
     private List<FiltersContainer> filtersContainers;
 
     @Override
     public int getColumnCount(){
-        return columnNames.size();
+        return Filter.getColumnCount();
     }
 
     @Override
     public int getRowCount(){
-        return Long.valueOf(filtersContainers.stream().map(filtersContainer -> filtersContainer.getFilters().size()).count()).intValue();
+        return Helpers.getFlatFilters(filtersContainers).size();
     }
 
     @Override
     public Object getValueAt(int row, int column){
-        List<Filter> filters = filtersContainers.stream().flatMap(filter -> filter.getFilters().stream()).collect(Collectors.toList());
+        List<Filter> filters = Helpers.getFlatFilters(filtersContainers);
         Filter filter = filters.get(row);
         return filter.getColumn(column);
     }
@@ -34,7 +35,7 @@ public class FiltersTableModel extends AbstractTableModel {
 
     @Override
     public String getColumnName(int column){
-        return columnNames.get(column);
+        return Filter.getColumnName(column);
     }
 
     public List<FiltersContainer> getFiltersContainers() {

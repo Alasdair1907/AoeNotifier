@@ -1,3 +1,5 @@
+package world.thismagical;
+
 import org.json.JSONArray;
 import org.json.JSONObject;
 

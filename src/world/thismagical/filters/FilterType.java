@@ -1,4 +1,4 @@
-package filters;
+package world.thismagical.filters;
 
 public enum FilterType {
 
