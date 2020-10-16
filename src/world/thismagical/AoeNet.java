@@ -12,28 +12,30 @@ import java.util.List;
 
 public class AoeNet {
 
-    public List<Lobby> connectAndFetchLobbies() throws Exception {
+    public static List<Lobby> connectAndFetchLobbies() throws Exception {
+        List<Lobby> lobbies = new ArrayList<>();
+
         HttpClient httpClient = HttpClient.newHttpClient();
         HttpRequest request = HttpRequest.newBuilder().uri(URI.create(Literals.apiLobbiesLocation)).build();
         HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
 
         if (response.statusCode() != 200){
-            return null;
+            return lobbies;
         }
 
         String data = response.body();
 
         if (data == null || data.isEmpty()){
-            return null;
+            return lobbies;
         }
 
-        List<Lobby> lobbies = new ArrayList<>();
         JSONArray lobbiesJson = new JSONArray(data);
 
         for (int i = 0; i < lobbiesJson.length(); i++){
             JSONObject lobbyJson = lobbiesJson.getJSONObject(i);
 
             Lobby lobby = new Lobby();
+            lobby.id = lobbyJson.getLong("lobby_id");
             lobby.title = lobbyJson.getString("name");
             Integer numSlots = lobbyJson.getInt("num_slots");
 
@@ -44,7 +46,12 @@ public class AoeNet {
             for (int t = 0; t < playersJson.length(); t++){
                 JSONObject playerJson = playersJson.getJSONObject(t);
                 Player player = new Player();
-                player.name = playerJson.getString("name");
+
+                try {
+                    player.name = playerJson.getString("name");
+                } catch (Exception ex){
+                    continue;
+                }
 
                 lobby.players.add(player);
             }

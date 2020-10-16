@@ -15,18 +15,21 @@ public class Filter {
     private String guid;
     private FilterType filterType;
     private PredicateType predicateType;
+    private TextMode textMode;
 
     private String predicate;
 
 
 
-    private static List<String> columnNames = List.of(Literals.COLUMN_FILTER_TYPE, Literals.COLUMN_PREDICATE_TYPE, Literals.COLUMN_SEARCH_PREDICATE);
+    private static List<String> columnNames = List.of(Literals.COLUMN_FILTER_TYPE, Literals.COLUMN_PREDICATE_TYPE,
+            Literals.COLUMN_TEXT_MODE, Literals.COLUMN_SEARCH_PREDICATE);
 
     public Object getColumn(Integer index){
         return switch (index){
             case 0 -> filterType;
             case 1 -> predicateType;
-            case 2 -> predicate;
+            case 2 -> textMode;
+            case 3 -> predicate;
             default -> null;
         };
     }
@@ -47,7 +50,8 @@ public class Filter {
         return switch (index){
             case 0 -> FilterType.class;
             case 1 -> PredicateType.class;
-            case 2 -> String.class;
+            case 2 -> TextMode.class;
+            case 3 -> String.class;
             default -> null;
         };
     }
@@ -66,6 +70,14 @@ public class Filter {
 
     public void setPredicateType(PredicateType predicateType) {
         this.predicateType = predicateType;
+    }
+
+    public TextMode getTextMode() {
+        return textMode;
+    }
+
+    public void setTextMode(TextMode textMode) {
+        this.textMode = textMode;
     }
 
     public String getPredicate() {

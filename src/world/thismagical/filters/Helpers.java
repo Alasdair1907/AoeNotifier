@@ -20,12 +20,14 @@ public class Helpers {
         return filtersContainers.stream().filter(filtersContainer -> filtersContainer.getId().equals(id)).findAny().orElse(null);
     }
 
-    public static void removeFilter(Integer rowId, List<FiltersContainer> containers){
+    public static void removeFilter(List<Integer> rowIds, List<FiltersContainer> containers){
         List<Filter> filterRows = getFlatFilters(containers);
-        String guidToDelete = filterRows.get(rowId).getGuid();
+
+        List<String> guidsToDelete = new ArrayList<>();
+        rowIds.forEach(id->guidsToDelete.add(filterRows.get(id).getGuid()));
 
         for (FiltersContainer filtersContainer : containers){
-            filtersContainer.getFilters().removeIf(filter -> guidToDelete.equals(filter.getGuid()));
+            filtersContainer.getFilters().removeIf(filter -> guidsToDelete.contains(filter.getGuid()));
         }
 
         containers.removeIf(filtersContainer -> filtersContainer.getFilters().isEmpty());
