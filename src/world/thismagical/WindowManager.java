@@ -182,7 +182,14 @@ public class WindowManager {
                         continue;
                     }
 
-                    List<Lobby> currentLobbies = AoeNet.connectAndFetchLobbies();
+                    List<Lobby> currentLobbies;
+                    try {
+                        currentLobbies = AoeNet.connectAndFetchLobbies();
+                    } catch (Exception ex){
+                        console.log("Error fetching lobbies from aoe2: "+ex.getMessage());
+                        currentLobbies = new ArrayList<>();
+                    }
+
                     List<Lobby> matchingLobbies = Matcher.getMatchingLobbies(filtersContainers, currentLobbies);
 
                     synchronized (lobbiesNotificationsLock) {
@@ -190,7 +197,11 @@ public class WindowManager {
 
                             String message = generateMessage(matchingLobbies, notifiedLobbies);
                             if (!message.isBlank()){
-                                trayIcon.displayMessage(Literals.NOTIFICATION_TITLE, message, TrayIcon.MessageType.INFO);
+                                try {
+                                    trayIcon.displayMessage(Literals.NOTIFICATION_TITLE, message, TrayIcon.MessageType.INFO);
+                                } catch (Exception ex){
+                                    console.log("Error creating system notification: "+ex.getMessage());
+                                }
                             }
 
                             matchingLobbies.forEach(lobby -> {

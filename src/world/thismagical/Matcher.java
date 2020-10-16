@@ -13,8 +13,12 @@ public class Matcher {
         List<Lobby> matchingLobbies = new ArrayList<>();
 
         for (Lobby lobby : lobbies){
-            if (containersMatchLobby(filtersContainers, lobby)){
-                matchingLobbies.add(lobby);
+            try {
+                if (containersMatchLobby(filtersContainers, lobby)) {
+                    matchingLobbies.add(lobby);
+                }
+            } catch (Exception ex){
+                System.out.println("Error matching lobby");
             }
         }
 

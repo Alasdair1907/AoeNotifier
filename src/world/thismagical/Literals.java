@@ -52,6 +52,7 @@ Then, create filter for the player - set 'Filter type' to 'Player name', set 'Pr
 Now join these filters, so that the lobby will have to match both conditions - select newly created filters using mouse and Ctrl, and click "Join selected filters (AND)" button.
 Now you can start monitoring.
 -----
+Current version: 1.0
 Latest version should be available at https://thismagical.world/aoe-notifier/
 Coded by Alasdair (alasdair1907@gmail.com)
     """;

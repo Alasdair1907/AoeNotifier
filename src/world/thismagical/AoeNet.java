@@ -20,7 +20,7 @@ public class AoeNet {
         HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
 
         if (response.statusCode() != 200){
-            return lobbies;
+            throw new RuntimeException("AOE2.NET HTTP STATUS CODE: "+response.statusCode());
         }
 
         String data = response.body();
@@ -35,19 +35,38 @@ public class AoeNet {
             JSONObject lobbyJson = lobbiesJson.getJSONObject(i);
 
             Lobby lobby = new Lobby();
-            lobby.id = lobbyJson.getLong("lobby_id");
-            lobby.title = lobbyJson.getString("name");
-            Integer numSlots = lobbyJson.getInt("num_slots");
 
-            Boolean turbo = lobbyJson.getBoolean("turbo");
-            Integer pop = lobbyJson.getInt("pop");
+            try {
+                lobby.id = lobbyJson.getLong("lobby_id");
+                lobby.title = lobbyJson.getString("name");
+            } catch (Exception ex){
+                // these are crucial infos, we discard the lobby without them
+                System.out.println("Lobby discarded due to parsing error");
+                continue;
+            }
 
-            JSONArray playersJson = lobbyJson.getJSONArray("players");
+            try {
+                lobby.numSlots = lobbyJson.getInt("num_slots");
+                lobby.turbo = lobbyJson.getBoolean("turbo");
+                lobby.pop = lobbyJson.getInt("pop");
+            } catch (Exception ex){
+                // these are not crucial, ignore
+                System.out.println("Lobby parsing error, ignored");
+            }
+            JSONArray playersJson;
+            try {
+                playersJson = lobbyJson.getJSONArray("players");
+            } catch (Exception ex){
+                System.out.println("Can not parse players array");
+                continue;
+            }
+
             for (int t = 0; t < playersJson.length(); t++){
-                JSONObject playerJson = playersJson.getJSONObject(t);
+                JSONObject playerJson;
                 Player player = new Player();
 
                 try {
+                    playerJson = playersJson.getJSONObject(t);
                     player.name = playerJson.getString("name");
                 } catch (Exception ex){
                     continue;
